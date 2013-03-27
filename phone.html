@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script src="/socket.io/socket.io.js"></script>
+<script src="jquery.js"></script>
+</head>
+<body>
+<script>
+    var socket = io.connect(window.location.origin);
+    socket.on('from server', function(data){
+        socket.emit('from client', {my: 'data'});
+    });
+// motion sensing
+    var init=true;
+    var gax, gay, gaz; //global for smoothing
+    var ax_old, ay_old, az_old;
+    var dax, day, daz;
+    var OnMoving = false;
+    var z =0; //nevVal = oldVal* z + newVal * (1-z)
+    var nz= 1-z;
+    var angle_x = 0, angle_y = 0, angle_z = 0;
+
+    function clip(x, Min, Max){
+        return Math.min(Math.max(x, Min), Max);
+    };
+
+    var acc2page=function(x,y){
+        // map -10, 10 to 0, 1000
+        outx=Math.round((x+10.0)*50.0);
+        outy=Math.round((y+10.0)*50.0);
+        return {'pageX': outx, 'pageY': outy};
+    };
+    var devicemotion = function(event){
+        if(!event) event = window.event;
+        var ACC = event.accelerationIncludingGravity;
+        var ori = window.orientation;
+        var ax = ((ori ==  0)? ACC.x: (ori == 90)? -ACC.y: (ori == -90)? ACC.y: -ACC.x);
+        var ay = ((ori ==  0)? ACC.y: (ori == 90)? ACC.x: (ori == -90)? -ACC.x: -ACC.y);
+
+        if (init){
+            // var p=$("<p/>").text("init==== ax:"+ax);
+            // $('body').append(p);
+        
+            gax=ax;
+            gay=ay;
+            gaz=ACC.z;
+            ax_old=gax, ay_old=gay, az_old=gaz;
+            dax=0; day=0; daz=0;
+            init = false;
+        }else{
+            var p=$("<p/>").text("ax:"+ax);
+            $('body').append(p);
+        
+            // dax = ax-ax_old, day=ay-ay_old, daz=az-az_old;
+            dax = ax-gax, day=ay-gay, daz=ACC.z-gaz;
+            ax_old=ax, ay_old=ay, az_old=ACC.z;
+
+            gax=gax*z+ax*nz;
+            gay=gay*z+ay*nz;
+            gaz=gaz*z+ACC.z;
+
+            var a = dax*dax+day*day+daz*daz;
+
+        
+            if(a>1.0){
+                if(OnMoving){
+                    data=acc2page(gax, gay);
+                    socket.emit('touchmove', data);
+                }else{
+                    OnMoving = true;
+                    socket.emit('touchstart', data);
+                }
+            }else{
+                if(OnMoving){
+                    data = acc2page(gax, gay);
+                    socket.emit('touchend', data);
+                    OnMoving = false;
+                }
+            }
+
+
+
+        }
+
+        // if(g.msg.is_on_air){
+            // g.msg.ws.send("".concat(ax, ",", ay, ",", ACC.z, "\r\n"));
+        // socket.emit("motion", {x: gax, y: gay, z: gaz});
+        //  return;
+        // }
+    };
+
+    function touchstart(e){
+        touch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
+        data = { 'pageX' : touch['pageX'], 'pageY' : touch['pageY'] };
+        socket.emit('touchstart', data);
+        var p=$("<p/>").text(window.location.origin);
+        $('body').append(p);
+
+    };
+
+    function touchmove(e) {
+        e.preventDefault();
+        touch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
+        data = { 'pageX' : touch['pageX'], 'pageY' : touch['pageY'] };
+        socket.emit('touchmove', data);
+    };
+
+    function touchend(e){
+        touch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
+        data = { 'pageX' : touch['pageX'], 'pageY' : touch['pageY'] };
+        socket.emit('touchend', data);
+    };
+
+    $(document).ready(function() {
+        $(document).bind('touchstart', touchstart);
+        $(document).bind('touchmove', touchmove);
+        $(document).bind('touchend', touchend);
+        window.ondevicemotion = devicemotion;
+    })
+</script>
+<div>
+    test data
+</div>
+</body>
+</html>
