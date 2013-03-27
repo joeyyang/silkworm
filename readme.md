@@ -1,5 +1,9 @@
 ![](https://raw.github.com/astanway/silkworm/master/blue_light.jpg)
 
+##Changes by Wdyang:
+* iphone's movement will not drive the painting
+* fixed compatibility issue with node 0.10.1, express 0.3.10 and socket.io 0.9.13
+
 ## This is Silkworm
 It's an awesome piece of interactive, generative art. To use:
 
