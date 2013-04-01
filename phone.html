@@ -48,8 +48,8 @@
             dax=0; day=0; daz=0;
             init = false;
         }else{
-            var p=$("<p/>").text("ax:"+ax);
-            $('body').append(p);
+            // var p=$("<p/>").text("ax:"+ax);
+            // $('body').append(p);
         
             // dax = ax-ax_old, day=ay-ay_old, daz=az-az_old;
             dax = ax-gax, day=ay-gay, daz=ACC.z-gaz;
@@ -62,12 +62,13 @@
             var a = dax*dax+day*day+daz*daz;
 
         
-            if(a>1.0){
+            if(a>0.5){
                 if(OnMoving){
                     data=acc2page(gax, gay);
                     socket.emit('touchmove', data);
                 }else{
                     OnMoving = true;
+                    data=acc2page(gax, gay);
                     socket.emit('touchstart', data);
                 }
             }else{
@@ -92,8 +93,9 @@
     function touchstart(e){
         touch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
         data = { 'pageX' : touch['pageX'], 'pageY' : touch['pageY'] };
-        socket.emit('touchstart', data);
-        var p=$("<p/>").text(window.location.origin);
+        // socket.emit('touchstart', data);
+        socket.emit('switch', data);
+        var p=$("<p/>").text('switch');
         $('body').append(p);
 
     };
@@ -102,13 +104,13 @@
         e.preventDefault();
         touch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
         data = { 'pageX' : touch['pageX'], 'pageY' : touch['pageY'] };
-        socket.emit('touchmove', data);
+        // socket.emit('touchmove', data);
     };
 
     function touchend(e){
         touch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
         data = { 'pageX' : touch['pageX'], 'pageY' : touch['pageY'] };
-        socket.emit('touchend', data);
+        // socket.emit('touchend', data);
     };
 
     $(document).ready(function() {

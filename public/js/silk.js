@@ -604,6 +604,7 @@ Written by the incredibly talented Yuri Vishnevsky.
         // })
         this.socket
             .on("touchstart", function (a) {
+                console.log("touch start");
             x(a);
             k = m;
             n = s;
@@ -615,8 +616,13 @@ Written by the incredibly talented Yuri Vishnevsky.
             return !1
         })
             .on("touchend", function () {
+                console.log("touch end");
             y();
             return !1
+        })
+            .on("switch", function (){
+                console.log("switch received");
+                f.setSymmetryTypes('both');    
         });
         j = {
             exist: function () {

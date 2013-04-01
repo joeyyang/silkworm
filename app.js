@@ -49,4 +49,7 @@ io.sockets.on('connection', function (socket) {
   socket.on('touchend', function(data){
       socket.broadcast.emit('touchend', data);
   });
+  socket.on('switch', function(data){
+    socket.broadcast.emit('switch', data);
+  });
 });
