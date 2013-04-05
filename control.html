@@ -60,12 +60,25 @@
     });
 
     var viewModel= function(){
+        var colorArray=['grey', 'pink', 'yellow', 'orange', 'green', 'blue'];
+        var symmetryArray=['vertical', 'both', 'none'];
         var self = this;
         self._color = 'blue';
         self._symmetry ='vertical';
         return {
             setColor: function(color){
                 self._color = color;
+                $('#colors').css('background-color', self._color);
+                socket.emit('control', {key:'color', value:self._color});
+                console.log(color);
+            },
+            nextColor: function(){
+                var idx = colorArray.indexOf(self._color);
+                idx+=1;
+                if (idx==colorArray.length){
+                    idx = 0;
+                }
+                self._color = colorArray[idx];
                 $('#colors').css('background-color', self._color);
                 socket.emit('control', {key:'color', value:self._color});
                 console.log(color);
@@ -79,6 +92,17 @@
                 socket.emit('control', {key:'symmetry', value:self._symmetry});
                 console.log(symmetry);
             },
+            nextSymmetry: function(symmetry){
+                var idx = symmetryArray.indexOf(self._symmetry);
+                idx+=1;
+                if (idx==symmetryArray.length){
+                    idx = 0;
+                }
+                self._symmetry = symmetryArray[idx];
+                socket.emit('control', {key:'symmetry', value:self._symmetry});
+                console.log(symmetry);
+            },
+
             symmetry: function(){return self._symmetry;}
         };
     };
@@ -100,6 +124,9 @@
         // $(document).bind('touchstart', touchstart);
         // $(document).bind('touchmove', touchmove);
         // $(document).bind('touchend', touchend);
+        key('space', function(){vm.clear();});
+        key('c', function(){vm.nextColor();});
+        key('s', function(){vm.nextSymmetry();});
     })
 </script>
 </body>
