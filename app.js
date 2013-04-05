@@ -29,10 +29,15 @@ app.get('/phone', function (req, res) {
   res.sendfile(__dirname + '/phone.html');
 });
 
+app.get('/control', function (req, res) {
+  res.sendfile(__dirname + '/control.html');
+});
+
 io.sockets.on('connection', function (socket) {  
   console.log('a message');
   socket.emit('from server', {hello:'client'});
   socket.on('from client', function(data){console.log(data);});
+  socket.on('from control', function(data){console.log(data);});
 
   socket.on('motion', function(data){
     socket.broadcast.emit('motion', data);
@@ -52,4 +57,8 @@ io.sockets.on('connection', function (socket) {
   socket.on('switch', function(data){
     socket.broadcast.emit('switch', data);
   });
+  socket.on('control', function(data){
+    socket.broadcast.emit('control', data);
+  });
+
 });

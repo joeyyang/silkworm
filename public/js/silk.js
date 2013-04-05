@@ -197,6 +197,7 @@ Written by the incredibly talented Yuri Vishnevsky.
         this.sparkRGB = [255, 255, 255]
     };
     h(f, Particles);
+    //f: interface
     f.prototype.setSymmetryTypes = function (a) {
         var b, c, e, i, g = this;
         i = [];
@@ -503,7 +504,7 @@ Written by the incredibly talented Yuri Vishnevsky.
                 .removeClass("hidden");
             this.swapSilkCanvii()
         }
-        return this.sparks.addClear(this.sparksCanvas, 100)
+        return this.sparks.addClear(this.sparksCanvas, 0) //Weidong, change from 100 to 0 to remove dusts when clearing
     };
     h.prototype.undoClear = function () {
         var a;
@@ -622,7 +623,19 @@ Written by the incredibly talented Yuri Vishnevsky.
         })
             .on("switch", function (){
                 console.log("switch received");
-                f.setSymmetryTypes('both');    
+                j.ui.setSymmetry('both');    
+        })
+            .on("control", function (a){
+                window.msg = a;
+                console.log("control"+a);
+                if(a.key=='color'){
+                    j.ui.setColor(a.value);
+                }else if(a.key=='symmetry'){
+                    j.ui.setSymmetry(a.value);
+                }else if(a.key=='clear'){
+                    j.ui.clear();
+                }
+                // j.ui.setSymmetry('both');    
         });
         j = {
             exist: function () {
@@ -658,6 +671,8 @@ Written by the incredibly talented Yuri Vishnevsky.
                 symmetry: ko.observable(""),
                 color: ko.observable(""),
                 setColor: function (a) {
+                    // debugger;
+                    console.log('setColor called '+a);
                     j.ui.color(a);
                     return b.blip()
                 },
@@ -697,6 +712,8 @@ Written by the incredibly talented Yuri Vishnevsky.
                 }
             }
         };
+        //weidong expose j for javascript control
+        // window.j = j;
         e = new ZeroClipboard.Client;
         e.glue("copy-to-clipboard", "copy-to-clipboard-wrap");
         a.replayUrl.subscribe(function (a) {

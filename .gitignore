@@ -11,6 +11,8 @@ pids
 logs
 results
 
+public/audio
+
 npm-debug.log
 node_modules
 

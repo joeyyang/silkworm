@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+        <meta name="viewport" content="width=device-width">
+
+        <link href='http://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
+
+        <link rel="stylesheet" href="css/normalize.css" />
+        <link rel="stylesheet" href="css/font.css" />
+        <link rel="stylesheet" href="css/style.css" />
+
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="js/jquery.js"></script>
+        <script src="js/keymaster.js"></script>
+        <script src="js/knockout.js"></script>
+
+        
+    </head>
+<body>
+
+<div id="page">
+    <div id="main">
+
+<div id="bar">
+    <div class="left">
+        <span class="control-link" data-bind="click: clear">
+            Clear
+        </span>
+    </div>
+</div>
+
+<div style="margin-top:20px">
+
+</div>
+
+<div id="controls">
+    <div id="colors" class="swatch">
+        <div class="swatches"  style="opacity:1;pointer-events:all">
+            <div data-bind="click: function() { setColor('grey') }" class="grey swatch" style="background-color:grey"></div>
+            <div data-bind="click: function() { setColor('pink') }" class="pink swatch"  style="background-color:pink"></div>
+            <div data-bind="click: function() { setColor('yellow') }" class="yellow swatch"  style="background-color:yellow"></div>
+            <div data-bind="click: function() { setColor('orange') }" class="orange swatch" style="background-color:orange"></div>
+            <div data-bind="click: function() { setColor('green') }" class="green swatch"  style="background-color:green"></div>
+            <div data-bind="click: function() { setColor('blue') }" class="blue swatch"  style="background-color:blue"></div>
+        </div>
+    </div>
+
+    <span id="symmetries" class="chooser", style="left:150px">
+        <span data-bind="click: function() { setSymmetry('none') }" class="control-link none symmetry">Symmetry Off</span>
+        <span data-bind="click: function() { setSymmetry('vertical') }" class="control-link vertical symmetry">Vertical Symmetry</span>
+        <span data-bind="click: function() { setSymmetry('both') }" class="control-link both symmetry">Four-way Symmetry</span>
+    </span>
+</div>
+</div>
+</div>
+<script type="text/javascript">
+    var socket = io.connect(window.location.origin);
+    socket.on('from server', function(data){
+        socket.emit('control', {my: 'Control connect'});
+    });
+
+    var viewModel= function(){
+        var self = this;
+        self._color = 'blue';
+        self._symmetry ='vertical';
+        return {
+            setColor: function(color){
+                self._color = color;
+                $('#colors').css('background-color', self._color);
+                socket.emit('control', {key:'color', value:self._color});
+                console.log(color);
+            },
+            clear: function(){
+                socket.emit('control', {key:'clear'});
+                console.log('clear');
+            },
+            setSymmetry: function(symmetry){
+                self._symmetry = symmetry; 
+                socket.emit('control', {key:'symmetry', value:self._symmetry});
+                console.log(symmetry);
+            },
+            symmetry: function(){return self._symmetry;}
+        };
+    };
+    var vm = new viewModel();
+    ko.applyBindings( vm);
+
+
+    // function touchstart(e){
+    //     touch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
+    //     data = { 'pageX' : touch['pageX'], 'pageY' : touch['pageY'] };
+    //     // socket.emit('touchstart', data);
+    //     socket.emit('switch', data);
+    //     var p=$("<p/>").text('switch');
+    //     $('body').append(p);
+
+    // };
+
+    $(document).ready(function() {
+        // $(document).bind('touchstart', touchstart);
+        // $(document).bind('touchmove', touchmove);
+        // $(document).bind('touchend', touchend);
+    })
+</script>
+</body>
+</html>
