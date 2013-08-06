@@ -1,11 +1,104 @@
 <!DOCTYPE html>
 <html>
-<head>
-<script src="/socket.io/socket.io.js"></script>
-<script src="jquery.js"></script>
-</head>
+    <head>
+        <meta name="viewport" content="width=device-width">
+
+        <link href='http://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
+
+        <link rel="stylesheet" href="css/normalize.css" />
+        <link rel="stylesheet" href="css/font.css" />
+        <link rel="stylesheet" href="css/style.css" />
+
+        <script src="js/keymaster.js"></script>
+        <script src="js/knockout.js"></script>
+
+        
+
+        <script src="/socket.io/socket.io.js"></script>
+        <script src="jquery.js"></script>
+    </head>
 <body>
+    <div id="page">
+        <div id="main">
+
+            <div id="bar">
+                <div class="left">
+                    <span class="control-link" data-bind="click: clear">
+                        Clear
+                    </span>
+                </div>
+            </div>
+
+            <div style="margin-top:20px">
+
+            </div>
+
+            <div id="controls">
+                <div id="colors" class="swatch" data-bind ="style:{backgroundColor:color}">
+                    <div class="swatches"  style="opacity:1;pointer-events:all">
+                        <div data-bind="click: function() { setColor('grey') }" class="grey swatch" style="background-color:grey"></div>
+                        <div data-bind="click: function() { setColor('pink') }" class="pink swatch"  style="background-color:pink"></div>
+                        <div data-bind="click: function() { setColor('yellow') }" class="yellow swatch"  style="background-color:yellow"></div>
+                        <div data-bind="click: function() { setColor('orange') }" class="orange swatch" style="background-color:orange"></div>
+                        <div data-bind="click: function() { setColor('green') }" class="green swatch"  style="background-color:green"></div>
+                        <div data-bind="click: function() { setColor('blue') }" class="blue swatch"  style="background-color:blue"></div>
+                    </div>
+                </div>
+
+                <span id="symmetries" class="chooser", style="left:150px">
+                    <span data-bind="click: function() { setSymmetry('none') }, style:{color: symmetry() == 'none' ? 'blue' : 'gray'}" class="control-link none symmetry">Symmetry Off</span>
+                    <span data-bind="click: function() { setSymmetry('vertical') }, style:{color: symmetry() == 'vertical' ? 'blue' : 'gray'}" class="control-link vertical symmetry">Vertical Symmetry</span>
+                    <span data-bind="click: function() { setSymmetry('both') }, style:{color: symmetry() == 'both' ? 'blue' : 'gray'}" class="control-link both symmetry">Four-way Symmetry</span>
+                </span>
+            </div>
+        </div>
+    </div>
 <script>
+
+    var phone_color = 'blue';
+
+    var viewModel= function(){
+        var colorArray=['grey', 'pink', 'yellow', 'orange', 'green', 'blue'];
+        var symmetryArray=['vertical', 'both', 'none'];
+        var self = this;
+        self._color = 'blue';
+        self._symmetry ='both';
+        phone_color = self._color;
+        return {
+            setColor: function(color){
+                self._color = color;
+                // $('#colors').css('background-color', self._color);
+                phone_color = color;
+                this.color(self._color);
+                // socket.emit('control', {key:'color', value:self._color});
+                // console.log(color);
+            },
+            clear: function(){
+                socket.emit('control', {key:'clear'});
+                console.log('clear');
+            },
+            setSymmetry: function(symmetry){
+                self._symmetry = symmetry; 
+                this.symmetry(self._symmetry);
+                socket.emit('control', {key:'symmetry', value:self._symmetry});
+                console.log(symmetry);
+            },
+            color: ko.observable(self._color),
+            symmetry: ko.observable(self._symmetry)
+        };
+        this.color(self._color);
+        this.symmetry(self._symmetry);
+    };
+    var vm = new viewModel();
+    ko.applyBindings( vm);
+
+
+    // var colorArray=['grey', 'pink', 'yellow', 'orange', 'green', 'blue'];
+    // var colorArray=['grey', 'yellow'];
+    // var id_color = Math.floor(Math.random()*2);
+    // var color = colorArray[id_color];
+    var scale = 0.5;
+
     var socket = io.connect(window.location.origin);
     socket.on('from server', function(data){
         socket.emit('from client', {my: 'data'});
@@ -26,8 +119,8 @@
 
     var acc2page=function(x,y){
         // map -10, 10 to 0, 1000
-        outx=Math.round((x+10.0)*50.0);
-        outy=Math.round((y+10.0)*50.0);
+        outx=Math.round((x+10.0)*50.0*scale);
+        outy=Math.round((y+10.0)*50.0*scale);
         return {'pageX': outx, 'pageY': outy};
     };
     var devicemotion = function(event){
@@ -67,12 +160,15 @@
                     data=acc2page(gax, gay);
                     socket.emit('touchmove', data);
                 }else{
+                    socket.emit('control', {key:'color', value:phone_color});
+
                     OnMoving = true;
                     data=acc2page(gax, gay);
                     socket.emit('touchstart', data);
                 }
             }else{
                 if(OnMoving){
+                    // socket.emit('control', {key:'color', value:color});
                     data = acc2page(gax, gay);
                     socket.emit('touchend', data);
                     OnMoving = false;
@@ -91,12 +187,13 @@
     };
 
     function touchstart(e){
+
         touch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
         data = { 'pageX' : touch['pageX'], 'pageY' : touch['pageY'] };
         // socket.emit('touchstart', data);
         socket.emit('switch', data);
-        var p=$("<p/>").text('switch');
-        $('body').append(p);
+        // var p=$("<p/>").text('switch');
+        // $('body').append(p);
 
     };
 
@@ -121,7 +218,7 @@
     })
 </script>
 <div>
-    test data
+    <!-- test data -->
 </div>
 </body>
 </html>
