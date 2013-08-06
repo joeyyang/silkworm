@@ -24,13 +24,16 @@
             <div id="bar">
                 <div class="left">
                     <span class="control-link" data-bind="click: clear">
-                        Clear
+                        <h2>Clear</h2>
                     </span>
                 </div>
             </div>
 
             <div style="margin-top:20px">
 
+            </div>
+            <div id="clear" style="background-color:gray; margin-left:150px;height:400px;" data-bind="click: clear">
+                clear
             </div>
 
             <div id="controls">
@@ -187,20 +190,21 @@
     };
 
     function touchstart(e){
+        // socket.emit('control', {key:'clear'});
 
-        touch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
-        data = { 'pageX' : touch['pageX'], 'pageY' : touch['pageY'] };
+        // touch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
+        // data = { 'pageX' : touch['pageX'], 'pageY' : touch['pageY'] };
         // socket.emit('touchstart', data);
-        socket.emit('switch', data);
+        // socket.emit('switch', data);
         // var p=$("<p/>").text('switch');
         // $('body').append(p);
 
     };
 
     function touchmove(e) {
-        e.preventDefault();
-        touch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
-        data = { 'pageX' : touch['pageX'], 'pageY' : touch['pageY'] };
+        // e.preventDefault();
+        // touch = e.originalEvent.touches[0] || e.originalEvent.changedTouches[0];
+        // data = { 'pageX' : touch['pageX'], 'pageY' : touch['pageY'] };
         // socket.emit('touchmove', data);
     };
 
