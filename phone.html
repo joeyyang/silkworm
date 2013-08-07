@@ -170,7 +170,8 @@
     // var colorArray=['grey', 'yellow'];
     // var id_color = Math.floor(Math.random()*2);
     // var color = colorArray[id_color];
-    var scale = 0.5;
+    var scale = 1;
+    var displace = 10;
 
     var socket = io.connect(window.location.origin);
     socket.on('from server', function(data){
@@ -192,8 +193,8 @@
 
     var acc2page=function(x,y){
         // map -10, 10 to 0, 1000
-        outx=Math.round((x+10.0)*50.0*scale);
-        outy=Math.round((y+10.0)*50.0*scale);
+        var outx=Math.round(-x*4.0*5.0+400);
+        var outy=Math.round(y*3.0*5.0+300);
         return {'pageX': outx, 'pageY': outy};
     };
     var devicemotion = function(event){
@@ -237,19 +238,19 @@
         
             if(a>0.5){
                 if(OnMoving){
-                    data=acc2page(gax, gay);
+                    data=acc2page(gax, gaz);
                     socket.emit('touchmove', data);
                 }else{
                     socket.emit('control', {key:'color', value:phone_color});
 
                     OnMoving = true;
-                    data=acc2page(gax, gay);
+                    data=acc2page(gax, gaz);
                     socket.emit('touchstart', data);
                 }
             }else{
                 if(OnMoving){
                     // socket.emit('control', {key:'color', value:color});
-                    data = acc2page(gax, gay);
+                    data = acc2page(gax, gaz);
                     socket.emit('touchend', data);
                     OnMoving = false;
                 }

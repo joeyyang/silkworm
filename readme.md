@@ -1,5 +1,7 @@
 ![](https://raw.github.com/astanway/silkworm/master/blue_light.jpg)
 
+* set browser size 1000x800, VDMX: 800*600
+
 ##Changes by Wdyang:
 * added server-url/cotrol as a separate browser control window.
 * iphone's movement will now drive the painting
