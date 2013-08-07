@@ -3,7 +3,7 @@
     <head>
         <meta name="viewport" content="width=device-width">
 
-        <link href='http://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'>
+        <!-- <link href='http://fonts.googleapis.com/css?family=Lato' rel='stylesheet' type='text/css'> -->
 
         <link rel="stylesheet" href="css/normalize.css" />
         <link rel="stylesheet" href="css/font.css" />
@@ -32,8 +32,14 @@
             <div style="margin-top:20px">
 
             </div>
-            <div id="clear" style="background-color:gray; margin-left:150px;height:400px;" data-bind="click: clear">
-                clear
+            <div id="clear" style="background-color:gray; margin-left:120px;height:400px;" data-bind="click: clear">
+                <span> clear</span></br>
+                <span data-bind="text: ax_width">ax_width</span>
+                <div id="ax" style="height:10px;" data-bind ="style:{width: ax_width,  'background-color': ax_background_color, 'margin-left': ax_margin_left}"></div>
+                <span data-bind="text: ay_width">ay_width</span>
+                <div id="ay" style="height:10px;" data-bind ="style:{width: ay_width,  'background-color': ay_background_color, 'margin-left': ay_margin_left}"></div>
+                <span data-bind="text: az_width">az_width</span>
+                <div id="az" style="height:10px;" data-bind ="style:{width: az_width,  'background-color': az_background_color, 'margin-left': az_margin_left}"></div>
             </div>
 
             <div id="controls">
@@ -59,11 +65,24 @@
 <script>
 
     var phone_color = 'blue';
+    var ax = 0;
 
     var viewModel= function(){
         var colorArray=['grey', 'pink', 'yellow', 'orange', 'green', 'blue'];
         var symmetryArray=['vertical', 'both', 'none'];
         var self = this;
+
+        self._ax = {width: 1,
+                    margin_left: 100,
+                    background_color: "blue"};
+        self._ay = {width: 1,
+                    margin_left: 100,
+                    background_color: "blue"};
+        self._az = {width: 1,
+                    margin_left: 100,
+                    background_color: "blue"};
+
+
         self._color = 'blue';
         self._symmetry ='both';
         phone_color = self._color;
@@ -86,9 +105,60 @@
                 socket.emit('control', {key:'symmetry', value:self._symmetry});
                 console.log(symmetry);
             },
+            setAx: function(ax){
+                self._ax.width = Math.abs(Math.round(ax*10, 4));
+                self._ax.background_color = ax>0 ? "blue" : "red";
+                self._ax.margin_left = ax > 0 ? 100 : (100 - self._ax.width);
+                console.log(self._ax.margin_left);
+                this.ax_width(self._ax.width +"px");
+                this.ax_margin_left(self._ax.margin_left+"px");
+                this.ax_background_color(self._ax.background_color);
+            },
+            ax_width: ko.observable(self._ax.width+"px"),
+            ax_margin_left: ko.observable(self._ax.margin_left+"px"),
+            ax_background_color : ko.observable(self._ax.background_color),
+
+            setAy: function(ay){
+                self._ay.width = Math.abs(Math.round(ay*10, 4));
+                self._ay.background_color = ay>0 ? "blue" : "red";
+                self._ay.margin_left = ay > 0 ? 100 : (100 - self._ay.width);
+                console.log(self._ay.margin_left);
+                this.ay_width(self._ay.width +"px");
+                this.ay_margin_left(self._ay.margin_left+"px");
+                this.ay_background_color(self._ay.background_color);
+            },
+            ay_width: ko.observable(self._ay.width+"px"),
+            ay_margin_left: ko.observable(self._ay.margin_left+"px"),
+            ay_background_color : ko.observable(self._ay.background_color),
+
+            setAz: function(az){
+                self._az.width = Math.abs(Math.round(az*10, 4));
+                self._az.background_color = az>0 ? "blue" : "red";
+                self._az.margin_left = az > 0 ? 100 : (100 - self._az.width);
+                console.log(self._az.margin_left);
+                this.az_width(self._az.width +"px");
+                this.az_margin_left(self._az.margin_left+"px");
+                this.az_background_color(self._az.background_color);
+            },
+            az_width: ko.observable(self._az.width+"px"),
+            az_margin_left: ko.observable(self._az.margin_left+"px"),
+            az_background_color : ko.observable(self._az.background_color),
+
             color: ko.observable(self._color),
             symmetry: ko.observable(self._symmetry)
         };
+        this.ax_width(self._ax.width+"px");
+        this.ax_margin_left(self._ax.margin_left+"px");
+        this.ax_background_color(self._ax.background_color);
+
+        this.ay_width(self._ay.width+"px");
+        this.ay_margin_left(self._ay.margin_left+"px");
+        this.ay_background_color(self._ay.background_color);
+
+        this.az_width(self._az.width+"px");
+        this.az_margin_left(self._az.margin_left+"px");
+        this.az_background_color(self._az.background_color);
+
         this.color(self._color);
         this.symmetry(self._symmetry);
     };
@@ -132,6 +202,13 @@
         var ori = window.orientation;
         var ax = ((ori ==  0)? ACC.x: (ori == 90)? -ACC.y: (ori == -90)? ACC.y: -ACC.x);
         var ay = ((ori ==  0)? ACC.y: (ori == 90)? ACC.x: (ori == -90)? -ACC.x: -ACC.y);
+
+        vm.setAx(ax);
+        vm.setAy(ay);
+        vm.setAz(ACC.z);
+        //vm.accx(Math.round((ax*10+5), 2)+"px");
+
+
 
         if (init){
             // var p=$("<p/>").text("init==== ax:"+ax);
