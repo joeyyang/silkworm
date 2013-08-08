@@ -34,11 +34,11 @@
             </div>
             <div id="clear" style="background-color:gray; margin-left:120px;height:400px;" data-bind="click: clear">
                 <span> clear</span></br>
-                <span data-bind="text: ax_width">ax_width</span>
+                <span data-bind="text: ax_val">ax_val</span>
                 <div id="ax" style="height:10px;" data-bind ="style:{width: ax_width,  'background-color': ax_background_color, 'margin-left': ax_margin_left}"></div>
-                <span data-bind="text: ay_width">ay_width</span>
+                <span data-bind="text: ay_val">ay_val</span>
                 <div id="ay" style="height:10px;" data-bind ="style:{width: ay_width,  'background-color': ay_background_color, 'margin-left': ay_margin_left}"></div>
-                <span data-bind="text: az_width">az_width</span>
+                <span data-bind="text: az_val">az_val</span>
                 <div id="az" style="height:10px;" data-bind ="style:{width: az_width,  'background-color': az_background_color, 'margin-left': az_margin_left}"></div>
             </div>
 
@@ -70,15 +70,19 @@
     var viewModel= function(){
         var colorArray=['grey', 'pink', 'yellow', 'orange', 'green', 'blue'];
         var symmetryArray=['vertical', 'both', 'none'];
+        var scale = 5;
         var self = this;
 
-        self._ax = {width: 1,
+        self._ax = {val: 1,
+                    width: 1,
                     margin_left: 100,
                     background_color: "blue"};
-        self._ay = {width: 1,
+        self._ay = {val: 1,
+                    width: 1,
                     margin_left: 100,
                     background_color: "blue"};
-        self._az = {width: 1,
+        self._az = {val: 1,
+                    width: 1,
                     margin_left: 100,
                     background_color: "blue"};
 
@@ -106,40 +110,47 @@
                 console.log(symmetry);
             },
             setAx: function(ax){
-                self._ax.width = Math.abs(Math.round(ax*10, 4));
+                self._ax.val = Math.round(ax*10)/10.0;
+                self._ax.width = Math.abs(Math.round(ax*10/scale, 4));
                 self._ax.background_color = ax>0 ? "blue" : "red";
                 self._ax.margin_left = ax > 0 ? 100 : (100 - self._ax.width);
-                console.log(self._ax.margin_left);
+                this.ax_val(self._ax.val);
                 this.ax_width(self._ax.width +"px");
                 this.ax_margin_left(self._ax.margin_left+"px");
                 this.ax_background_color(self._ax.background_color);
             },
+            ax_val: ko.observable(self._ax.val),
             ax_width: ko.observable(self._ax.width+"px"),
             ax_margin_left: ko.observable(self._ax.margin_left+"px"),
             ax_background_color : ko.observable(self._ax.background_color),
 
             setAy: function(ay){
-                self._ay.width = Math.abs(Math.round(ay*10, 4));
+                self._ay.val = Math.round(ay*10)/10.0;
+                self._ay.width = Math.abs(Math.round(ay*10/scale, 4));
                 self._ay.background_color = ay>0 ? "blue" : "red";
                 self._ay.margin_left = ay > 0 ? 100 : (100 - self._ay.width);
-                console.log(self._ay.margin_left);
-                this.ay_width(self._ay.width +"px");
+                this.ay_val(self._ay.val);
+                this.ay_width(self._ay.width +"px"),
                 this.ay_margin_left(self._ay.margin_left+"px");
                 this.ay_background_color(self._ay.background_color);
             },
+            ay_val: ko.observable(self._ay.val),
             ay_width: ko.observable(self._ay.width+"px"),
             ay_margin_left: ko.observable(self._ay.margin_left+"px"),
             ay_background_color : ko.observable(self._ay.background_color),
 
             setAz: function(az){
-                self._az.width = Math.abs(Math.round(az*10, 4));
+                self._az.val = Math.round(az*10)/10.0;
+                self._az.width = Math.abs(Math.round(az*10/scale, 4));
                 self._az.background_color = az>0 ? "blue" : "red";
                 self._az.margin_left = az > 0 ? 100 : (100 - self._az.width);
                 console.log(self._az.margin_left);
+                this.az_val(self._az.val);
                 this.az_width(self._az.width +"px");
                 this.az_margin_left(self._az.margin_left+"px");
                 this.az_background_color(self._az.background_color);
             },
+            az_val: ko.observable(self._az.val),
             az_width: ko.observable(self._az.width+"px"),
             az_margin_left: ko.observable(self._az.margin_left+"px"),
             az_background_color : ko.observable(self._az.background_color),
@@ -147,14 +158,17 @@
             color: ko.observable(self._color),
             symmetry: ko.observable(self._symmetry)
         };
+        this.ax_val(self._ax.val);
         this.ax_width(self._ax.width+"px");
         this.ax_margin_left(self._ax.margin_left+"px");
         this.ax_background_color(self._ax.background_color);
 
+        this.ay_val(self._ay.val);
         this.ay_width(self._ay.width+"px");
         this.ay_margin_left(self._ay.margin_left+"px");
         this.ay_background_color(self._ay.background_color);
 
+        this.az_val(self._az.val);
         this.az_width(self._az.width+"px");
         this.az_margin_left(self._az.margin_left+"px");
         this.az_background_color(self._az.background_color);
