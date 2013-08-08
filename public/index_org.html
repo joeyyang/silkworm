@@ -29,25 +29,24 @@
 
 		<div id="page">
 			<div id="main">
-<!--
+
 				<div id="intro" data-bind="css: { pristine: pristine }">
 					<div class="message">
 						<h1>Silk</h1>
 						<p class="subtitle">A magical interactive artwork</p>
 					</div>
 				</div>
--->
+
 				<div id="bar" data-bind="css: { pristine: pristine }">
 					<div class="left">
-						<!--
 						<span class="control-link" data-bind="click: clear">
 							Clear
 						</span>
--->
+
 						<span class="anchor">
 							<span class="pane" data-bind="css: { visible: dirty() && !replayUrl() }">
-								<!-- <span class="control-link" data-bind="click: share, visible: !saving()">Share</span>
-								<span class="inactive control-link" data-bind="visible: saving">Loading...</span> -->
+								<span class="control-link" data-bind="click: share, visible: !saving()">Share</span>
+								<span class="inactive control-link" data-bind="visible: saving">Loading...</span>
 							</span>
 
 							<span class="pane" data-bind="css: { visible: replayUrl }">
@@ -73,24 +72,32 @@
 											<div class="text" data-bind="text: clipText"></div>
 										</div>
 									</div>
-								</div>
+								</div><!-- <a class="link icon control-link" data-bind="attr: { href: replayUrl }">
+									<i class="icon-large icon-link"></i>
+									<div class="tooltip">
+										<div class="text">Direct link</div>
+									</div>
+								</a> -->
 							</span>
 
-							<!-- <span class="pane" data-bind="css: { visible: canUndo }">
+							<span class="pane" data-bind="css: { visible: canUndo }">
 								<span data-bind="click: undo" id="undo" class="control-link">Undo</span>
-							</span> -->
+							</span>
 						</span>
 					</div>
 
-<!-- 					<div class="right">
-						<span class="volume icon control-link" data-bind="click: toggleSound, css: { off: muteSound }">
+					<div class="right">
+<!-- 						<span data-bind="click: toggleMusic, css: { off: muteMusic }" id="toggle-music" class="icon control-link">
+							<i class="icon-music"></i>
+						</span>
+ -->						<span class="volume icon control-link" data-bind="click: toggleSound, css: { off: muteSound }">
 							<i class="icon-volume-up"></i>
 							<i class="icon-volume-off"></i>
 						</span>
-					</div> -->
+					</div>
 				</div>
-
-				<!-- <div id="controls" data-bind="css: { pristine: pristine }">
+				<div id="controls" data-bind="css: { pristine: pristine }">
+					<!-- data-bind="event: { mouseenter: bloop }"  -->
 					<div id="colors" class="swatch">
 						<div class="swatches">
 							<div data-bind="click: function() { setColor('grey') }" class="grey swatch"></div>
@@ -107,7 +114,7 @@
 						<span data-bind="click: function() { setSymmetry('both') }, visible: symmetry() == 'vertical'" class="control-link vertical symmetry">Vertical Symmetry</span>
 						<span data-bind="click: function() { setSymmetry('none') }, visible: symmetry() == 'both'" class="control-link both symmetry">Four-way Symmetry</span>
 					</span>
-				</div> -->
+				</div>
 				
 				<div id="canvii">
 					<canvas id="silk-1"></canvas>

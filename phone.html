@@ -66,6 +66,7 @@
 
     var phone_color = 'blue';
     var ax = 0;
+    var bColorChanged = false;
 
     var viewModel= function(){
         var colorArray=['grey', 'pink', 'yellow', 'orange', 'green', 'blue'];
@@ -96,6 +97,7 @@
                 // $('#colors').css('background-color', self._color);
                 phone_color = color;
                 this.color(self._color);
+                bColorChanged = true;
                 // socket.emit('control', {key:'color', value:self._color});
                 // console.log(color);
             },
@@ -193,6 +195,9 @@
     });
 // motion sensing
     var init=true;
+    var residue = 10; //After touch started, keep next 10 steps alive
+    var touchEndSkip = 20; //skip 30 touchend event, then release 1
+    var reStartCnt = 30;
     var gax, gay, gaz; //global for smoothing
     var ax_old, ay_old, az_old;
     var dax, day, daz;
@@ -207,8 +212,8 @@
 
     var acc2page=function(x,y){
         // map -10, 10 to 0, 1000
-        var outx=Math.round(-x*4.0*5.0+400);
-        var outy=Math.round(y*3.0*5.0+300);
+        var outx=Math.round(-x*4.0*5.0+430);
+        var outy=Math.round(y*3.0*5.0+320);
         return {'pageX': outx, 'pageY': outy};
     };
     var devicemotion = function(event){
@@ -249,24 +254,43 @@
 
             var a = dax*dax+day*day+daz*daz;
 
+            if(bColorChanged){
+                OnMoving = false;
+                bColorChanged = false;
+            }
         
-            if(a>0.5){
-                if(OnMoving){
+            if(a>2){
+                residue = 2;
+                if(OnMoving){ //touch moving
                     data=acc2page(gax, gaz);
                     socket.emit('touchmove', data);
-                }else{
+                    reStartCnt--;
+                    if(reStartCnt<0) OnMoving = false; //trigger a touchStart event
+                }else{ //touch start
                     socket.emit('control', {key:'color', value:phone_color});
-
                     OnMoving = true;
+                    touchEndSkip = 0;
+                    reStartCnt = 60;
                     data=acc2page(gax, gaz);
                     socket.emit('touchstart', data);
                 }
             }else{
-                if(OnMoving){
-                    // socket.emit('control', {key:'color', value:color});
-                    data = acc2page(gax, gaz);
-                    socket.emit('touchend', data);
-                    OnMoving = false;
+                bColorChanged = true;
+                if(residue > 0){
+                    data=acc2page(gax, gaz);
+                    socket.emit('touchmove', data);
+                    reStartCnt--;
+                    residue --;
+                }
+                else{
+                    if(touchEndSkip>0){
+                        touchEndSkip --;
+                    }else{
+                        touchEndSkip = 30;
+                        data = acc2page(gax, gaz);
+                        socket.emit('touchend', data);
+                        OnMoving = false;
+                    }
                 }
             }
 

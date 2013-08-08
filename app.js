@@ -25,6 +25,12 @@ app.get('/browser', function (req, res) {
   res.sendfile(__dirname + '/public/index.html');
 });
 
+app.get('/browser_org', function (req, res) {
+  // debugger;
+  console.log(__dirname);
+  res.sendfile(__dirname + '/public/index_org.html');
+});
+
 app.get('/phone', function (req, res) {
   res.sendfile(__dirname + '/phone.html');
 });

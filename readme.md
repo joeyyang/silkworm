@@ -1,6 +1,6 @@
 ![](https://raw.github.com/astanway/silkworm/master/blue_light.jpg)
 
-* set browser size 1000x800, VDMX: 800*600
+* set browser size 1024x768, VDMX: 1024x768
 
 ##Changes by Wdyang:
 * added server-url/cotrol as a separate browser control window.
