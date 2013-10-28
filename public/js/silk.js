@@ -18,7 +18,8 @@ Written by the incredibly talented Yuri Vishnevsky.
             return a
         }, w = [].slice;
     this.socket = io.connect(window.location.origin);
-    this.SilkDomain = "http://new.weavesilk.com";
+    // this.SilkDomain = "http://new.weavesilk.com";
+    this.SilkDomain = "http://localhost";
     this.NotYuri = null == localStorage.isYuri;
     this.rand = Math.random;
     this.max = Math.max;
@@ -1034,8 +1035,8 @@ Written by the incredibly talented Yuri Vishnevsky.
     this.refreshCarbonAd = function () {
         var a, b;
         a = H();
-        if (30 < a - F) return F = a, $(".carbonad")
-            .html('<div id="azcarbon"></div>'), b = document.createElement("script"), b.type = "text/javascript", b.async = !0, b.src = "http://engine.carbonads.com/z/17908/azcarbon_2_1_0_HORIZDARK", a = document.getElementsByTagName("script")[0], a.parentNode.insertBefore(b, a)
+        // if (30 < a - F) return F = a, $(".carbonad")
+        //     .html('<div id="azcarbon"></div>'), b = document.createElement("script"), b.type = "text/javascript", b.async = !0, b.src = "http://engine.carbonads.com/z/17908/azcarbon_2_1_0_HORIZDARK", a = document.getElementsByTagName("script")[0], a.parentNode.insertBefore(b, a)
     };
     $(function () {
         var a, b, c, e, f, g, h;
